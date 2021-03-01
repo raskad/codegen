@@ -419,6 +419,27 @@ enum IpAddrKind {
 }
 
 #[test]
+fn enum_with_variant_annotation() {
+    let mut scope = Scope::new();
+
+    let mut enum_ = Enum::new("Foo");
+
+    let mut variant1 = Variant::new("One");
+    variant1.annotation(vec![r#"#[serde(rename = "one")]"#]);
+    enum_.push_variant(variant1);
+
+    scope.push_enum(enum_);
+
+    let expect = r#"
+enum Foo {
+    #[serde(rename = "one")]
+    One,
+}"#;
+
+    assert_eq!(scope.to_string(), &expect[1..]);
+}
+
+#[test]
 fn scoped_imports() {
     let mut scope = Scope::new();
     scope
